@@ -40,6 +40,28 @@ input (1, 28, 28)
 - Optimizer: `torch.optim.Adam`, lr 1e-3, 5 epochs
 - Padding=1 preserves spatial size at each conv (so spatial only changes at pool layers)
 
+### Layer-by-layer
+
+| Stage | Operation | Output shape | Details |
+|---|---|---|---|
+| input | — | 1 × 28 × 28 | grayscale image |
+| conv1 + ReLU | `Conv2d` | 16 × 28 × 28 | 16 filters, 3×3, pad=1 |
+| maxpool | `MaxPool2d` | 16 × 14 × 14 | 2×2 |
+| conv2 + ReLU | `Conv2d` | 32 × 14 × 14 | 32 filters, 3×3, pad=1 |
+| maxpool | `MaxPool2d` | 32 × 7 × 7 | 2×2 |
+| flatten | `Flatten` | 1568 | 32 × 7 × 7 = 1568 |
+| FC | `Linear` | 10 | 10 output classes (logits) |
+
+### Summary
+
+| | |
+|---|---|
+| Convolution layers | 2 |
+| MaxPool layers | 2 |
+| Fully connected layers | 1 (1568 → 10) |
+| Total parameters | ~20k |
+| Test accuracy | **88.7%** |
+
 ## What this project demonstrates
 
 - **Forward + backward propagation by hand** — not just calling `loss.backward()`. The NumPy notebook makes every gradient explicit.
